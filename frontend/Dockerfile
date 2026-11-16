@@ -3,7 +3,7 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 RUN npm run build
@@ -15,7 +15,8 @@ FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Optional: Override default nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV BACKEND_URL=http://app:80
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 

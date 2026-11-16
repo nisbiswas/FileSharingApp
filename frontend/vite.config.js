@@ -7,9 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://backend.app.fastapi',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
-        secure: false,
       }
     }
   }
