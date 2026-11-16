@@ -1,0 +1,25 @@
+services:
+  app:
+    build: ./backend
+    image: filesharing-backend:local
+    environment:
+      FORWARDED_ALLOW_IPS: "*"
+    volumes:
+      - uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  web:
+    build: ./frontend
+    image: filesharing-frontend:local
+    environment:
+      BACKEND_URL: http://app:8000
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:80"
+volumes:
+  uploads:

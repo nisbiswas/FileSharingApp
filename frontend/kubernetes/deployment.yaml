@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: nbpvm/frontend:latest
+          image: filesharing-frontend:local
           ports:
             - containerPort: 80
 ---

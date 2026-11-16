@@ -15,6 +15,8 @@ metadata:
   name: backend
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: backend
@@ -25,13 +27,19 @@ spec:
     spec:
       containers:
         - name: backend
-          image: nbpvm/backend:latest
-          imagePullPolicy: Always
+          image: filesharing-backend:local
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000  
           volumeMounts:
             - name: upload-storage 
               mountPath: /app/uploads
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            periodSeconds: 5
+            failureThreshold: 60
           livenessProbe:
               httpGet:
                 path: /status
@@ -40,7 +48,7 @@ spec:
               periodSeconds: 10
           readinessProbe:
               httpGet: 
-                path: /status
+                path: /ready
                 port: 8000
               initialDelaySeconds: 5
               periodSeconds: 10  
